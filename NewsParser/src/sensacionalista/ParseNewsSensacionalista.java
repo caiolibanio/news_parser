@@ -40,9 +40,9 @@ public class ParseNewsSensacionalista {
 		
 	}
 	
-	private String createFolder() {
+	private String createFolder(String caderno) {
 		String timeStamp = generateTimeStamp();
-		String folderName = timeStamp.replace(":", "_");
+		String folderName = "sensacinalista_" + caderno;
 		
 		if (!new File(folderName).exists()) { // Verifica se o diret�rio existe.   
              (new File(folderName)).mkdirs();   // Cria o diret�rio   
@@ -55,34 +55,56 @@ public class ParseNewsSensacionalista {
 		return timeStamp;
 	}
 	
-	private String createFile(String folderName) throws IOException {
+	private File createFile(String folderName, String year, String caderno) throws IOException {
 		Random r = new Random();
 		int name = r.nextInt(100000000);
 		
-		String fileName = System.getProperty("user.dir") + "/" + folderName + "/" + name + ".html";
+		String fileName = System.getProperty("user.dir") + "/" + folderName + "/" + name + "_" + caderno + "_" + year + ".html";
 		File file = new File( fileName );
 		file.createNewFile();
 
 		bw = new BufferedWriter
 				(new OutputStreamWriter(new FileOutputStream(fileName),"UTF-8"));
-		return fileName;
+		return file;
 	}
 	
-	public void parseNews(String baseLink, int minPages, int maxPages) {
+	public void parseNews(String baseLink, int minPages, int maxPages, String caderno) {
 		List<String> all_pages = generateUrls(baseLink, minPages, maxPages);
-		String folderName = createFolder();
+		String folderName = createFolder(caderno);
 		String actual_page = "";
 		try {
 			for(String page : all_pages) {
 				actual_page = page;
 				System.out.println("Processing page: " + actual_page);
-				List<String> links = extractAllLinks(page, globalList);
+				File file = null;
+				List<String> links = null;
+				try {
+					links = extractAllLinks(page, globalList);
+				} catch (Exception e) {
+					System.err.println("Something goes wrong in page: " + page);
+					System.out.println(e);
+					Date date = new Date();
+					System.out.println(date);
+				}
+				
 				globalList.addAll(links);
 				for (String link : links) {
-					Document doc = getUrlData(link);
-					createFile(folderName);
-					String news = writeNewsOnFile(doc, link);
-					bw.close();
+					try {
+						Document doc = getUrlData(link);
+						String year = link.split("/")[3];
+						file = createFile(folderName, year, caderno);
+						String news = writeNewsOnFile(doc, link);
+						bw.close();
+					} catch (Exception e) {
+						if(file.exists()) {
+							file.delete();
+						}
+						System.err.println("Something goes wrong in link: " + link);
+						System.out.println(e);
+						Date date = new Date();
+						System.out.println(date);
+					}
+					
 				}
 			}
 		} catch (Exception e) {
@@ -176,12 +198,14 @@ public class ParseNewsSensacionalista {
 	public static void main(String args[]) throws IOException {
 		
 		ParseNewsSensacionalista c = new ParseNewsSensacionalista();
-		String baseUrl = "https://www.sensacionalista.com.br/pais/";
+		//String baseUrl = "https://www.sensacionalista.com.br/pais/";
 		
-		//c.parseNews(baseUrl, 2, 451);
+//		String baseUrl = "https://www.sensacionalista.com.br/entretenimento/";
+//		String baseUrl = "https://www.sensacionalista.com.br/esportes/";
+//		String baseUrl = "https://www.sensacionalista.com.br/mundo/";
+		String baseUrl = "https://www.sensacionalista.com.br/comportamento-2/";
 		
-		//Something goes wrong in page: https://www.sensacionalista.com.br/pais/page/441/
-		//Thu Nov 16 23:16:24 BRT 2017
+		c.parseNews(baseUrl, 2, 74, baseUrl.split("/")[3]);
 		
 		
 		

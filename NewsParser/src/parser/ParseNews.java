@@ -37,8 +37,8 @@ public class ParseNews {
 		String timeStamp = generateTimeStamp();
 		String folderName = timeStamp.replace(":", "_");
 		
-		if (!new File(folderName).exists()) { // Verifica se o diretório existe.   
-             (new File(folderName)).mkdirs();   // Cria o diretório   
+		if (!new File(folderName).exists()) { // Verifica se o diretï¿½rio existe.   
+             (new File(folderName)).mkdirs();   // Cria o diretï¿½rio   
          }  
 		
 		
@@ -49,7 +49,7 @@ public class ParseNews {
 				docXml = Jsoup.connect(linha).get();
 			} catch (IOException e1) {
 				e1.printStackTrace();
-				System.err.println("Não foi possível se conectar a URL");
+				System.err.println("Nï¿½o foi possï¿½vel se conectar a URL");
 				continue;
 			}
 //			writeHeaderGroup(linha);
@@ -63,7 +63,8 @@ public class ParseNews {
 				String link = e.text();
 				listLinks.add(link.split(" ")[0]);
 			}
-			listLinks.removeAll(Arrays.asList("http://g1.globo.com"));
+			//listLinks.removeAll(Arrays.asList("http://g1.globo.com"));
+			listLinks.removeAll(Arrays.asList("http://globoesporte.globo.com"));
 			for(String link : listLinks){
 				
 				String fileName = createFile(folderName);
