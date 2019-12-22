@@ -43,6 +43,7 @@ public class SensacionalistaMain {
 		String satirePath = "2017-11-16 22_14_08.968";
 //		String satirePath = "2018-03-24 12_44_46.493";
 		String fakeNewsPath = "fake_news_br";
+		String fakeNewsPathNovas = "fake_news_br_novas";
 		String fakeUsp = "fake_usp";
 		String esportesPath = "noticias_esporte";
 		String esporteEconomiaPath = "esporte_economia";
@@ -57,7 +58,7 @@ public class SensacionalistaMain {
 		String real_horne = "Real_horne";
 		String fake_top_buzz_2016 = "top_fake_2016_buzzfeed";
 		String fake_top_buzz_2017 = "top_fake_2017_buzzfeed";
-		createCSVFile("", diarioPernambucano);
+		createCSVFile("", fakeNewsPath);
 //		createCSVFileByYearBuckets(satirePath);
 		
 		
@@ -117,7 +118,7 @@ public class SensacionalistaMain {
         for(String news : listFakeNews) {
         	String title_body[] = news.split("----");
         	String title = title_body[0];
-        	String body = title_body[1].replaceAll("\\.","\\. ");
+        	String body = title_body[1];
         	if(body.length() > 30) {
         		title = title.replaceAll("\"", "");
         		body = body.replaceAll("\"", "");
@@ -297,7 +298,7 @@ public class SensacionalistaMain {
 	}
 	
 	private static String formatToCSV(String text){
-		text = text.replaceAll("\"", "'");
+		text = text.replaceAll("\"", ""); 
 		String textNews = "\"" + text + "\"";
 		textNews = textNews.replaceAll("\\r?\\n", " ").replaceAll(",", "").replaceAll(";", "");
 		return textNews;
@@ -474,7 +475,8 @@ public class SensacionalistaMain {
 		}else if(pathFake.equals("fake_news_br") || pathFake.equals("fake_usp")
 				|| pathFake.equals("Fake_horne") || pathFake.equals("Satire_horne")
 				|| pathFake.equals("Real_horne") || pathFake.equals("top_fake_2016_buzzfeed") 
-				|| pathFake.equals("top_fake_2017_buzzfeed")) {
+				|| pathFake.equals("top_fake_2017_buzzfeed")
+				|| pathFake.equals("fake_news_br")) {
 			//fake genuina
 			final File folder = new File(pathFake);
 			List<File> listFiles = listFilesForFolder(folder);
@@ -494,7 +496,7 @@ public class SensacionalistaMain {
 		
 		
 		try {
-			writeCSV(listFakeNews, listRealNews, "diario_brasil_virgula.csv");
+			writeCSV(listFakeNews, listRealNews, "fake_95_CORRETOS.csv");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
