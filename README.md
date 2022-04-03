@@ -1,3 +1,3 @@
 # news_parser
 
-Parsers implemented to collect news from some Brazilian news providers.
+Parsers implemented to collect satire documents from some Brazilian satire providers.
